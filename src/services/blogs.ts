@@ -44,3 +44,7 @@ voluptas. Quae, harum.
 export function getAllBlogs(): IBlog[] {
   return allBlogs;
 }
+
+export function getBlog(id: string): IBlog | undefined {
+  return allBlogs.find((b) => b.id === id);
+}
