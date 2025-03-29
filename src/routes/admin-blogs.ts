@@ -8,7 +8,8 @@ const adminBlogsRouter = Router();
 adminBlogsRouter.use(requireAuth({ signInUrl: "/sign-in" }), hasAdminPerms);
 
 adminBlogsRouter.get("/", (_, res) => {
-  res.render("blogs", { blogs: getAllBlogs() });
+  res.locals.layout = "admin-main";
+  res.render("admin-blog-list", { blogs: getAllBlogs() });
 });
 
 export { adminBlogsRouter };

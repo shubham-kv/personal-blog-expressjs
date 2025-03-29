@@ -1,0 +1,16 @@
+<section>
+  {{#each blogs}}
+  <div class="my-8">
+    <div>
+      <h3 class="text-xl">{{this.title}}</h3>
+      <p class="text-sm font-light">{{this.publishDate}}</p>
+    </div>
+
+    <div>
+      <p class="line-clamp-2 my-2">
+        {{this.excerpt}}
+      </p>
+    </div>
+  </div>
+  {{/each}}
+</section>
