@@ -1,0 +1,18 @@
+<div class="grid place-content-center my-8">
+  <div id="user-button"></div>
+  <div id="sign-in"></div>
+</div>
+
+<script>
+  window.addEventListener('load', async function () {
+    await Clerk.load()
+
+    if (Clerk.user) {
+      const userButtonDiv = document.getElementById('user-button')
+      Clerk.mountUserButton(userButtonDiv)
+    } else {
+      const signInDiv = document.getElementById('sign-in')
+      Clerk.mountSignIn(signInDiv)
+    }
+  })
+</script>

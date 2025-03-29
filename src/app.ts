@@ -24,4 +24,8 @@ app.get("/", (_, res) => {
 app.use("/blogs", blogsRouter);
 app.use("/admin", adminBlogsRouter);
 
+app.use("/sign-in", (_, res) => {
+  res.render("sign-in");
+});
+
 export default app;

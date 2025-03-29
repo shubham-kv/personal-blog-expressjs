@@ -5,10 +5,7 @@ import { getAllBlogs } from "../services/blogs";
 
 const adminBlogsRouter = Router();
 
-adminBlogsRouter.use(
-  requireAuth({ signInUrl: "/sign-in.html" }),
-  hasAdminPerms
-);
+adminBlogsRouter.use(requireAuth({ signInUrl: "/sign-in" }), hasAdminPerms);
 
 adminBlogsRouter.get("/", (_, res) => {
   res.render("blogs", { blogs: getAllBlogs() });
