@@ -1,19 +1,23 @@
 import { Router } from "express";
 import { requireAuth } from "@clerk/express";
+
 import { hasAdminPerms } from "../middlewares";
-import { getAllBlogs, getBlog } from "../services/blogs";
+import { getBlogs, getBlog } from "../services/blogs";
+import { isMongoId } from "../utils/mongo";
 
 const adminBlogsRouter = Router();
 
 adminBlogsRouter.use(requireAuth({ signInUrl: "/sign-in" }), hasAdminPerms);
 
-adminBlogsRouter.get("/", (_, res) => {
+adminBlogsRouter.get("/", async (_, res) => {
+  const blogsData = await getBlogs(true);
   res.locals.layout = "admin-main";
-  res.render("admin-blog-list", { blogs: getAllBlogs() });
+  res.render("admin-blog-list", { blogs: blogsData.data });
 });
 
-adminBlogsRouter.get("/:id", (req, res, next) => {
-  const blog = getBlog(req.params.id);
+adminBlogsRouter.get("/:id", async (req, res, next) => {
+  const blogId = req.params.id;
+  const blog = isMongoId(blogId) ? await getBlog(blogId, false) : undefined;
 
   if (blog) {
     res.locals.layout = "admin-main";

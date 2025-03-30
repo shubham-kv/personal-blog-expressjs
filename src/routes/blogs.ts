@@ -1,20 +1,24 @@
 import { Router } from "express";
-import { getAllBlogs, getBlog } from "../services/blogs";
+import { getBlogs, getBlog } from "../services/blogs";
+import { isMongoId } from "../utils/mongo";
 
 const blogsRouter = Router();
 
-blogsRouter.get("/", (_, res) => {
-  res.render("blogs", { blogs: getAllBlogs() });
+blogsRouter.get("/", async (_, res) => {
+  const blogsData = await getBlogs();
+  res.render("blogs", { blogs: blogsData.data });
 });
 
-blogsRouter.get("/:id", (req, res, next) => {
-  const blog = getBlog(req.params.id);
+blogsRouter.get("/:id", async (req, res, next) => {
+  const blogId = req.params.id;
+  const blog = isMongoId(blogId) ? await getBlog(blogId) : undefined;
 
-  if (!blog) {
-    next();
-  } else {
+  if (blog) {
     res.render("blog", { blog });
+    return;
   }
+
+  next();
 });
 
 export { blogsRouter };
