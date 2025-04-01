@@ -72,3 +72,26 @@ export async function getBlog(
     updatedAt: blog.updatedAt,
   };
 }
+
+export async function updateBlog(
+  blogId: string,
+  data: Partial<IBlog>
+): Promise<IBlog | null> {
+  const blog = await Blog.findOneAndUpdate({ _id: blogId }, data).exec();
+
+  if (!blog) {
+    return null;
+  }
+
+  return {
+    id: blog.id,
+    title: blog.title,
+    excerpt: blog.excerpt,
+    content: blog.content,
+    isDraft: blog.isDraft,
+    publishDate: formatPublishDate(blog.publishedAt),
+    publishedAt: blog.publishedAt,
+    createdAt: blog.createdAt,
+    updatedAt: blog.updatedAt,
+  };
+}

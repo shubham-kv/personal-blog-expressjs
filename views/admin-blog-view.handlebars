@@ -1,7 +1,15 @@
 <article class="mt-8">
-  <div>
-    <h3 class="text-xl">{{blog.title}}</h3>
-    <p class="text-sm font-light">{{blog.publishDate}}</p>
+  <div class="flex items-center justify-between">
+    <div>
+      <h3 class="title text-xl focus-visible:outline-none" contenteditable="true">{{blog.title}}</h3>
+      <p class="text-sm font-light">{{blog.publishDate}}</p>
+    </div>
+    <div>
+      <button
+        class="save px-4 py-1 rounded-md border-2 border-gray-700 opacity-80 transition-all enabled:hover:cursor-pointer enabled:hover:opacity-100 enabled:active:[transform:scale(0.97,0.97)] enabled:active:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-40">
+        Save
+      </button>
+    </div>
   </div>
   <div>
     <div class="content mt-2 pb-40"></div>
@@ -12,8 +20,12 @@
   import { Editor } from "https://esm.sh/@tiptap/core";
   import StarterKit from "https://esm.sh/@tiptap/starter-kit";
 
+  const titleElement = document.querySelector(".title");
+  const contentElement = document.querySelector(".content");
+  const saveButton = document.querySelector("button.save");
+
   const editor = new Editor({
-    element: document.querySelector(".content"),
+    element: contentElement,
     extensions: [
       StarterKit.configure({
         heading: { levels: [1, 2, 3, 4, 5, 6] }
@@ -21,11 +33,37 @@
     ],
     editorProps: {
       attributes: {
-        class: "contentEditor min-h-[150px] text-base bg-transparent focus-visible:outline-none"
+        class: "contentEditor min-h-[150px] text-base focus-visible:outline-none"
       }
     },
-    content: he.decode(`{{blog.content}}`),
-    editable: false
+    content: `{{{blog.content}}}`,
+  });
+
+  saveButton.addEventListener('click', async function (e) {
+    saveButton.setAttribute('disabled', true);
+
+    const url = '/api/v1/blogs/{{blog.id}}/edit';
+    const method = 'POST';
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+
+    const body = JSON.stringify({ title: titleElement.innerText, content: editor.getHTML() });
+
+    try {
+      const response = await fetch(url, { method, headers, body });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log(responseData);
+        window.location.reload();
+      } else {
+        console.error('Response not ok', response);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      saveButton.removeAttribute('disabled')
+    }
   });
 
 </script>
