@@ -12,7 +12,7 @@ adminBlogsRouter.use(requireAuth({ signInUrl: "/sign-in" }), hasAdminPerms);
 adminBlogsRouter.get("/", async (_, res) => {
   const blogsData = await getBlogs(true);
   res.locals.layout = "admin-main";
-  res.render("admin-blog-list", { blogs: blogsData.data });
+  res.render("admin-blog-list", { blogs: blogsData.data, showAddButton: true });
 });
 
 adminBlogsRouter.get("/:id", async (req, res, next) => {

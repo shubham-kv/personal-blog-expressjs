@@ -2,6 +2,20 @@ import { Blog } from "../models";
 import { formatPublishDate } from "../utils/misc";
 import { IBlog, PaginatedData, Pagination } from "../types";
 
+export async function createBlog(
+  data: Pick<IBlog, "title" | "content">
+): Promise<IBlog> {
+  const blog = new Blog({
+    ...data,
+    isDraft: true,
+  });
+
+  const { id, title, content, isDraft, publishedAt, createdAt, updatedAt } =
+    await blog.save();
+
+  return { id, title, content, isDraft, publishedAt, createdAt, updatedAt };
+}
+
 export async function getBlogs(
   forAdmin = false,
   pagination: Pagination = { page: 1, limit: 10 }
