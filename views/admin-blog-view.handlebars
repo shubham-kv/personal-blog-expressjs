@@ -4,11 +4,22 @@
       <h3 class="title text-xl focus-visible:outline-none" contenteditable="true">{{blog.title}}</h3>
       <p class="text-sm font-light">{{blog.publishDate}}</p>
     </div>
-    <div>
+    <div class="flex gap-4">
+      {{#if blog.isDraft}}
       <button
-        class="save px-4 py-1 rounded-md border-2 border-gray-700 opacity-80 transition-all enabled:hover:cursor-pointer enabled:hover:opacity-100 enabled:active:[transform:scale(0.97,0.97)] enabled:active:bg-gray-200 disabled:cursor-not-allowed disabled:opacity-40">
+        class="save px-4 py-1 rounded-md opacity-80 transition-all enabled:hover:cursor-pointer enabled:hover:bg-gray-100 enabled:hover:opacity-100 enabled:active:[transform:scale(0.97,0.97)] enabled:active:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-40">
         Save
       </button>
+      <button
+        class="publish px-4 py-1 rounded-md border-2 border-gray-700 opacity-80 transition-all enabled:hover:cursor-pointer enabled:hover:bg-gray-100 enabled:hover:opacity-100 enabled:active:[transform:scale(0.97,0.97)] enabled:active:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-40">
+        Publish
+      </button>
+      {{else}}
+      <button
+        class="save px-4 py-1 rounded-md border-2 border-gray-700 opacity-80 transition-all enabled:hover:cursor-pointer enabled:hover:bg-gray-100 enabled:hover:opacity-100 enabled:active:[transform:scale(0.97,0.97)] enabled:active:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-40">
+        Save
+      </button>
+      {{/if}}
     </div>
   </div>
   <div>
@@ -23,6 +34,7 @@
   const titleElement = document.querySelector(".title");
   const contentElement = document.querySelector(".content");
   const saveButton = document.querySelector("button.save");
+  const publishButton = document.querySelector("button.publish");
 
   const editor = new Editor({
     element: contentElement,
@@ -63,6 +75,31 @@
       console.error(e);
     } finally {
       saveButton.removeAttribute('disabled')
+    }
+  });
+
+  publishButton.addEventListener('click', async function (e) {
+    publishButton.setAttribute('disabled', true);
+
+    const url = '/api/v1/blogs/{{blog.id}}/publish';
+    const method = 'POST';
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
+
+    try {
+      const response = await fetch(url, { method, headers });
+
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log(responseData);
+        window.location.reload();
+      } else {
+        console.error('Response not ok', response);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      publishButton.removeAttribute('disabled')
     }
   });
 

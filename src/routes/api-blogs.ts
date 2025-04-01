@@ -36,4 +36,23 @@ apiBlogsRouter.post("/:id/edit", async (req, res, next) => {
   next();
 });
 
+apiBlogsRouter.post("/:id/publish", async (req, res, next) => {
+  const blogId = req.params.id;
+  const patchData: Partial<IBlog> = {
+    isDraft: false,
+    publishedAt: new Date()
+  };
+
+  if (isMongoId(blogId)) {
+    const publishedBlog = await updateBlog(blogId, patchData);
+
+    if (publishedBlog) {
+      res.json({ message: "Publish Success", blog: publishedBlog });
+      return;
+    }
+  }
+
+  next();
+});
+
 export { apiBlogsRouter };
