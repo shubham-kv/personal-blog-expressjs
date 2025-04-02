@@ -14,10 +14,16 @@
 <body>
   <div class="max-w-4xl mx-auto">
     <nav class="flex items-center justify-between my-4 px-6">
+      {{#if home}}
+      <h2 class="text-3xl lobster-two">your blogs</h2>
+
+      {{else}}
       <a href="/admin/blogs" class="inline-block">
         <h2 class="text-3xl lobster-two">your blogs</h2>
       </a>
-      {{#if showAddButton}}
+      {{/if}}
+
+      {{#if home}}
       <button
         class="add px-4 py-1 rounded-md opacity-80 transition-all enabled:hover:cursor-pointer enabled:hover:bg-gray-100 enabled:hover:opacity-100 enabled:active:[transform:scale(0.97,0.97)] enabled:active:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-40">
         + Add
@@ -29,7 +35,7 @@
     </div>
   </div>
 
-  {{#if showAddButton}}
+  {{#if home}}
   <script type="module">
     const addButton = document.querySelector('button.add');
 

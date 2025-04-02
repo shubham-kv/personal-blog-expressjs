@@ -13,9 +13,17 @@
 
 <body>
   <div class="max-w-4xl mx-auto">
-    <div class="my-4 px-6">
+    <nav class="my-4 px-6">
+      {{#if home}}
       <h2 class="text-3xl lobster-two">personal blog</h2>
-    </div>
+
+      {{else}}
+      <a href="/blogs" class="inline-block">
+        <h2 class="text-3xl lobster-two">personal blog</h2>
+      </a>
+      {{/if}}
+    </nav>
+
     <div class="my-8 px-6">
       {{{body}}}
     </div>
