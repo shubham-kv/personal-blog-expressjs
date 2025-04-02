@@ -14,7 +14,7 @@ blogsRouter.get("/:id", async (req, res, next) => {
   const blog = isMongoId(blogId) ? await getBlog(blogId) : undefined;
 
   if (blog) {
-    res.render("blog", { blog });
+    res.render("blog-view", { blog });
     return;
   }
 

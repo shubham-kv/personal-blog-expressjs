@@ -21,7 +21,7 @@ adminBlogsRouter.get("/:id", async (req, res, next) => {
 
   if (blog) {
     res.locals.layout = "admin-main";
-    res.render("admin-blog-view", { blog });
+    res.render("blog-view", { blog, hasManageBlogPerms: true });
     return;
   }
 
