@@ -1,7 +1,6 @@
 export interface IBlog {
   id: string;
   title: string;
-  excerpt?: string | null | undefined;
   content: string;
   isDraft: boolean;
   publishDate?: Date | string;

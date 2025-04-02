@@ -29,7 +29,6 @@ export async function getBlogs(
     {
       $project: {
         title: 1,
-        excerpt: 1,
         content: 1,
         ...(forAdmin ? { isDraft: 1 } : {}),
         publishedAt: 1,
@@ -77,7 +76,6 @@ export async function getBlog(
   return {
     id: blog.id,
     title: blog.title,
-    excerpt: blog.excerpt,
     content: blog.content,
     isDraft: blog.isDraft,
     publishDate: formatPublishDate(blog.publishedAt),
@@ -100,7 +98,6 @@ export async function updateBlog(
   return {
     id: blog.id,
     title: blog.title,
-    excerpt: blog.excerpt,
     content: blog.content,
     isDraft: blog.isDraft,
     publishDate: formatPublishDate(blog.publishedAt),
