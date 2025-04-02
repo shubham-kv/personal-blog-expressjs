@@ -4,17 +4,29 @@
       <h3 class="title text-xl focus-visible:outline-none" contenteditable="true">{{blog.title}}</h3>
       <p class="text-sm font-light">{{blog.publishDate}}</p>
     </div>
-    <div class="flex gap-4">
+    <div class="flex gap-2">
       {{#if blog.isDraft}}
+      <button
+        class="delete px-4 py-1 rounded-md transition-all text-red-800 enabled:hover:cursor-pointer enabled:hover:bg-red-100 enabled:active:bg-red-200 disabled:cursor-not-allowed disabled:opacity-40">
+        Delete
+      </button>
+
       <button
         class="save px-4 py-1 rounded-md opacity-80 transition-all enabled:hover:cursor-pointer enabled:hover:bg-gray-100 enabled:hover:opacity-100 enabled:active:[transform:scale(0.97,0.97)] enabled:active:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-40">
         Save
       </button>
+
       <button
         class="publish px-4 py-1 rounded-md border-2 border-gray-700 opacity-80 transition-all enabled:hover:cursor-pointer enabled:hover:bg-gray-100 enabled:hover:opacity-100 enabled:active:[transform:scale(0.97,0.97)] enabled:active:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-40">
         Publish
       </button>
+
       {{else}}
+      <button
+        class="delete px-4 py-1 rounded-md transition-all text-red-800 enabled:hover:cursor-pointer enabled:hover:bg-red-100 enabled:active:bg-red-200 disabled:cursor-not-allowed disabled:opacity-40">
+        Delete
+      </button>
+
       <button
         class="save px-4 py-1 rounded-md border-2 border-gray-700 opacity-80 transition-all enabled:hover:cursor-pointer enabled:hover:bg-gray-100 enabled:hover:opacity-100 enabled:active:[transform:scale(0.97,0.97)] enabled:active:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-40">
         Save
@@ -23,7 +35,7 @@
     </div>
   </div>
   <div>
-    <div class="content mt-2 pb-40"></div>
+    <div class="content mt-4 pb-40"></div>
   </div>
 </article>
 
@@ -33,6 +45,7 @@
 
   const titleElement = document.querySelector(".title");
   const contentElement = document.querySelector(".content");
+  const deleteButton = document.querySelector("button.delete");
   const saveButton = document.querySelector("button.save");
   const publishButton = document.querySelector("button.publish");
 
@@ -40,15 +53,36 @@
     element: contentElement,
     extensions: [
       StarterKit.configure({
-        heading: { levels: [1, 2, 3, 4, 5, 6] }
+        heading: { levels: [1, 2, 3, 4, 5, 6] },
       }),
     ],
     editorProps: {
       attributes: {
-        class: "contentEditor min-h-[150px] text-base focus-visible:outline-none"
-      }
+        class: "contentEditor min-h-[150px] text-base focus-visible:outline-none",
+      },
     },
     content: `{{{blog.content}}}`,
+  });
+
+  deleteButton.addEventListener("click", async function () {
+    deleteButton.setAttribute("disabled", true);
+
+    const url = "/api/v1/blogs/{{blog.id}}/delete";
+    const method = "POST";
+
+    try {
+      const response = await fetch(url, { method });
+
+      if (response.ok) {
+        window.location.href = "/admin/blogs";
+      } else {
+        console.error("Response not ok", response);
+      }
+    } catch (e) {
+      console.error(e);
+    } finally {
+      deleteButton.removeAttribute("disabled");
+    }
   });
 
   saveButton.addEventListener('click', async function (e) {

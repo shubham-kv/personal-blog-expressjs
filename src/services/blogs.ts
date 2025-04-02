@@ -109,3 +109,9 @@ export async function updateBlog(
     updatedAt: blog.updatedAt,
   };
 }
+
+export async function deleteBlog(blogId: string): Promise<boolean> {
+  const blog = await Blog.findByIdAndDelete(blogId);
+
+  return !!blog;
+}

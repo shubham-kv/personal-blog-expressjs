@@ -7,6 +7,9 @@
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono",
       "Courier New", monospace;
+    --color-red-100: oklch(0.936 0.032 17.717);
+    --color-red-200: oklch(0.885 0.062 18.334);
+    --color-red-800: oklch(0.444 0.177 26.899);
     --color-gray-100: oklch(0.967 0.003 264.542);
     --color-gray-300: oklch(0.872 0.01 258.338);
     --color-gray-700: oklch(0.373 0.034 259.733);
@@ -196,6 +199,9 @@
   .mt-2 {
     margin-top: calc(var(--spacing) * 2);
   }
+  .mt-4 {
+    margin-top: calc(var(--spacing) * 4);
+  }
   .mt-6 {
     margin-top: calc(var(--spacing) * 6);
   }
@@ -241,8 +247,8 @@
   .justify-between {
     justify-content: space-between;
   }
-  .gap-4 {
-    gap: calc(var(--spacing) * 4);
+  .gap-2 {
+    gap: calc(var(--spacing) * 2);
   }
   .rounded-md {
     border-radius: var(--radius-md);
@@ -285,6 +291,9 @@
   .font-light {
     --tw-font-weight: var(--font-weight-light);
     font-weight: var(--font-weight-light);
+  }
+  .text-red-800 {
+    color: var(--color-red-800);
   }
   .opacity-80 {
     opacity: 80%;
@@ -329,6 +338,15 @@
       }
     }
   }
+  .enabled\:hover\:bg-red-100 {
+    &:enabled {
+      &:hover {
+        @media (hover: hover) {
+          background-color: var(--color-red-100);
+        }
+      }
+    }
+  }
   .enabled\:hover\:opacity-100 {
     &:enabled {
       &:hover {
@@ -349,6 +367,13 @@
     &:enabled {
       &:active {
         background-color: var(--color-gray-300);
+      }
+    }
+  }
+  .enabled\:active\:bg-red-200 {
+    &:enabled {
+      &:active {
+        background-color: var(--color-red-200);
       }
     }
   }

@@ -2,7 +2,7 @@ import { Router } from "express";
 import { requireAuth } from "@clerk/express";
 
 import { hasAdminPerms } from "../middlewares";
-import { createBlog, updateBlog } from "../services/blogs";
+import { createBlog, deleteBlog, updateBlog } from "../services/blogs";
 import { isMongoId } from "../utils/mongo";
 import { IBlog } from "../types";
 
@@ -73,6 +73,21 @@ apiBlogsRouter.post("/:id/publish", async (req, res, next) => {
 
     if (publishedBlog) {
       res.json({ message: "Publish Success", blog: publishedBlog });
+      return;
+    }
+  }
+
+  next();
+});
+
+apiBlogsRouter.post("/:id/delete", async (req, res, next) => {
+  const blogId = req.params.id;
+
+  if (isMongoId(blogId)) {
+    const isBlogDeleted = await deleteBlog(blogId);
+
+    if (isBlogDeleted) {
+      res.sendStatus(204);
       return;
     }
   }
