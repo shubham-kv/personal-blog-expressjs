@@ -6,7 +6,7 @@ const blogsRouter = Router();
 
 blogsRouter.get("/", async (_, res) => {
   const blogsData = await getBlogs();
-  res.render("blogs", { blogs: blogsData.data });
+  res.render("blogs", { home: true, blogs: blogsData.data });
 });
 
 blogsRouter.get("/:id", async (req, res, next) => {
@@ -14,7 +14,7 @@ blogsRouter.get("/:id", async (req, res, next) => {
   const blog = isMongoId(blogId) ? await getBlog(blogId) : undefined;
 
   if (blog) {
-    res.render("blog", { blog });
+    res.render("blog-view", { blog });
     return;
   }
 

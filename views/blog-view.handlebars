@@ -1,13 +1,20 @@
-<article class="mt-8">
-  <div class="flex items-center justify-between">
+<article class="flex flex-col gap-4">
+  <div class="flex items-center justify-between flex-wrap gap-4">
     <div>
+      {{#if hasManageBlogPerms}}
       <h3 class="title text-xl focus-visible:outline-none" contenteditable="true">{{blog.title}}</h3>
+      {{else}}
+      <h3 class="title text-xl focus-visible:outline-none">{{blog.title}}</h3>
+      {{/if}}
+
       <p class="text-sm font-light">{{blog.publishDate}}</p>
     </div>
+
+    {{#if hasManageBlogPerms}}
     <div class="flex gap-2">
       {{#if blog.isDraft}}
       <button
-        class="delete px-4 py-1 rounded-md transition-all text-red-800 enabled:hover:cursor-pointer enabled:hover:bg-red-100 enabled:active:bg-red-200 disabled:cursor-not-allowed disabled:opacity-40">
+        class="delete px-4 py-1 rounded-md transition-all text-red-800 enabled:hover:cursor-pointer enabled:hover:bg-red-200 enabled:active:bg-red-300 disabled:cursor-not-allowed disabled:opacity-40">
         Delete
       </button>
 
@@ -23,7 +30,7 @@
 
       {{else}}
       <button
-        class="delete px-4 py-1 rounded-md transition-all text-red-800 enabled:hover:cursor-pointer enabled:hover:bg-red-100 enabled:active:bg-red-200 disabled:cursor-not-allowed disabled:opacity-40">
+        class="delete px-4 py-1 rounded-md transition-all text-red-800 enabled:hover:cursor-pointer enabled:hover:bg-red-200 enabled:active:bg-red-300 disabled:cursor-not-allowed disabled:opacity-40">
         Delete
       </button>
 
@@ -33,9 +40,11 @@
       </button>
       {{/if}}
     </div>
+    {{/if}}
   </div>
+
   <div>
-    <div class="content mt-4 pb-40"></div>
+    <div class="content pb-40"></div>
   </div>
 </article>
 
@@ -62,8 +71,14 @@
       },
     },
     content: `{{{blog.content}}}`,
+    {{#if hasManageBlogPerms}}
+    editable: true,
+    {{else}}
+    editable: false,
+    {{/if}}
   });
 
+  {{#if hasManageBlogPerms}}
   deleteButton.addEventListener("click", async function () {
     deleteButton.setAttribute("disabled", true);
 
@@ -136,5 +151,5 @@
       publishButton.removeAttribute('disabled')
     }
   });
-
+  {{/if}}
 </script>
