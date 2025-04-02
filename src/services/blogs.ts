@@ -1,50 +1,117 @@
-import { format } from "date-fns";
-import { IBlog } from "../types";
+import { Blog } from "../models";
+import { formatPublishDate } from "../utils/misc";
+import { IBlog, PaginatedData, Pagination } from "../types";
 
-const allBlogs: IBlog[] = [
-  {
-    id: "1",
-    title: "First Blog",
-    excerpt: `Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus
-quae blanditiis vel! Repellendus autem, quaerat blanditiis ut rerum
-nisi, voluptatibus at maxime ducimus quae odio ea laudantium temporibus.
-Esse, molestias`,
-    content: `
-<p class="my-2">
-  Lorem ipsum dolor sit amet consectetur adipisicing elit. Necessitatibus
-  quae blanditiis vel! Repellendus autem, quaerat blanditiis ut rerum
-  nisi, voluptatibus at maxime ducimus quae odio ea laudantium temporibus.
-  Esse, molestias.
-</p>
-<p class="my-2">
-  Est harum odio ipsam vitae soluta esse eius tempora sed adipisci
-  voluptatibus eveniet, unde, eaque, sapiente doloremque ea culpa
-  voluptas. Quae, harum.
-</p>
-<p class="my-2">
-  Enim voluptatum blanditiis eveniet! Dolores soluta delectus quas eius sint ullam
-  totam minima ducimus omnis reprehenderit culpa iusto, at cum ad nemo?
-</p>
-    `,
-    publishDate: format(new Date(), "hh:mm aaa, Lo LLLL yyyy"),
-  },
-  {
-    id: "2",
-    title: "Second Blog",
-    excerpt:
-`Est harum odio ipsam vitae soluta esse eius tempora sed adipisci
-voluptatibus eveniet, unde, eaque, sapiente doloremque ea culpa
-voluptas. Quae, harum.
-`,
-    content: "This is the first hello world blog",
-    publishDate: format(new Date(), "hh:mm aaa, Lo LLLL yyyy"),
-  },
-];
+export async function createBlog(
+  data: Pick<IBlog, "title" | "content">
+): Promise<IBlog> {
+  const blog = new Blog({
+    ...data,
+    isDraft: true,
+  });
 
-export function getAllBlogs(): IBlog[] {
-  return allBlogs;
+  const { id, title, content, isDraft, publishedAt, createdAt, updatedAt } =
+    await blog.save();
+
+  return { id, title, content, isDraft, publishedAt, createdAt, updatedAt };
 }
 
-export function getBlog(id: string): IBlog | undefined {
-  return allBlogs.find((b) => b.id === id);
+export async function getBlogs(
+  forAdmin = false,
+  pagination: Pagination = { page: 1, limit: 10 }
+): Promise<PaginatedData<IBlog[]>> {
+  const { page, limit } = pagination;
+  const skip = (page - 1) * limit;
+
+  const aggregateResult = await Blog.aggregate([
+    { $match: forAdmin ? {} : { isDraft: false } },
+    { $sort: { createdAt: 1 } },
+    {
+      $project: {
+        title: 1,
+        excerpt: 1,
+        content: 1,
+        ...(forAdmin ? { isDraft: 1 } : {}),
+        publishedAt: 1,
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    },
+    {
+      $facet: {
+        blogs: [{ $skip: skip }, { $limit: limit }],
+        meta: [{ $count: "total" }],
+      },
+    },
+  ]);
+
+  const data: IBlog[] = (aggregateResult[0]?.blogs ?? []).map((b: any) => ({
+    id: b._id,
+    ...b,
+    _id: undefined,
+    publishDate: formatPublishDate(b.publishedAt),
+  }));
+
+  const total = aggregateResult[0]?.total ?? 0;
+
+  return {
+    data,
+    page,
+    limit,
+    total,
+  };
+}
+
+export async function getBlog(
+  blogId: string,
+  publishedOnly = true
+): Promise<IBlog | null | undefined> {
+  const blog = await Blog.findOne({
+    $and: [{ _id: blogId }, ...(publishedOnly ? [{ isDraft: false }] : [])],
+  }).exec();
+
+  if (!blog) {
+    return null;
+  }
+
+  return {
+    id: blog.id,
+    title: blog.title,
+    excerpt: blog.excerpt,
+    content: blog.content,
+    isDraft: blog.isDraft,
+    publishDate: formatPublishDate(blog.publishedAt),
+    publishedAt: blog.publishedAt,
+    createdAt: blog.createdAt,
+    updatedAt: blog.updatedAt,
+  };
+}
+
+export async function updateBlog(
+  blogId: string,
+  data: Partial<IBlog>
+): Promise<IBlog | null> {
+  const blog = await Blog.findOneAndUpdate({ _id: blogId }, data).exec();
+
+  if (!blog) {
+    return null;
+  }
+
+  return {
+    id: blog.id,
+    title: blog.title,
+    excerpt: blog.excerpt,
+    content: blog.content,
+    isDraft: blog.isDraft,
+    publishDate: formatPublishDate(blog.publishedAt),
+    publishedAt: blog.publishedAt,
+    createdAt: blog.createdAt,
+    updatedAt: blog.updatedAt,
+  };
+}
+
+export async function deleteBlog(blogId: string): Promise<boolean> {
+  const blog = await Blog.findByIdAndDelete(blogId);
+
+  return !!blog;
 }
