@@ -1,14 +1,12 @@
 <section class="flex flex-col gap-4">
   {{#each blogs}}
-  <article>
+  <div>
     <div>
-      <h3 class="text-xl">{{this.title}}</h3>
+      <a href="/blogs/{{this.id}}" class="inline-block font-light">
+        <h3 class="inline-block text-xl hover:underline">{{this.title}}</h3>
+      </a>
       <p class="text-sm font-light">{{this.publishDate}}</p>
     </div>
-
-    <div>
-      <a class="text-base font-light hover:underline" href="/blogs/{{this.id}}">Read more</a>
-    </div>
-  </article>
+  </div>
   {{/each}}
 </section>
