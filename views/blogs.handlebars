@@ -1,0 +1,12 @@
+<section class="flex flex-col gap-4">
+  {{#each blogs}}
+  <div>
+    <div>
+      <a href="/blogs/{{this.id}}" class="inline-block font-light">
+        <h3 class="inline-block text-xl hover:underline">{{this.title}}</h3>
+      </a>
+      <p class="text-sm font-light">{{this.publishDate}}</p>
+    </div>
+  </div>
+  {{/each}}
+</section>

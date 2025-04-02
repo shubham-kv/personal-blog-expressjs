@@ -1,0 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=Lobster+Two:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@layer base {
+  h1 {
+    font-size: var(--text-5xl);
+    font-weight: var(--font-weight-bold);
+  }
+
+  h2 {
+    font-size: var(--text-4xl);
+    font-weight: var(--font-weight-bold);
+  }
+
+  h3 {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-weight-bold);
+  }
+
+  h4 {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-bold);
+  }
+
+  h5 {
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-bold);
+  }
+}
+
+.lobster-two-regular {
+  font-family: "Lobster Two", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.lobster-two {
+  font-family: "Lobster Two", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}

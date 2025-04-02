@@ -1,0 +1,75 @@
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Your Blogs</title>
+  <link rel="stylesheet" href="/layouts/main/styles.css" />
+  <script async crossorigin="anonymous"
+    data-clerk-publishable-key="pk_test_b3V0Z29pbmctYmVuZ2FsLTgyLmNsZXJrLmFjY291bnRzLmRldiQ"
+    src="http://outgoing-bengal-82.clerk.accounts.dev/npm/@clerk/clerk-js@5/dist/clerk.browser.js"
+    type="text/javascript"></script>
+</head>
+
+<body>
+  <div class="max-w-4xl mx-auto">
+    <nav class="flex items-center justify-between my-4 px-6">
+      {{#if home}}
+      <h2 class="text-3xl lobster-two">your blogs</h2>
+
+      {{else}}
+      <a href="/admin/blogs" class="inline-block">
+        <h2 class="text-3xl lobster-two">your blogs</h2>
+      </a>
+      {{/if}}
+
+      {{#if home}}
+      <button
+        class="add px-4 py-1 rounded-md opacity-80 transition-all enabled:hover:cursor-pointer enabled:hover:bg-gray-100 enabled:hover:opacity-100 enabled:active:[transform:scale(0.97,0.97)] enabled:active:bg-gray-300 disabled:cursor-not-allowed disabled:opacity-40">
+        + Add
+      </button>
+      {{/if}}
+    </nav>
+    <div class="my-8 px-6">
+      {{{body}}}
+    </div>
+  </div>
+
+  {{#if home}}
+  <script type="module">
+    const addButton = document.querySelector('button.add');
+
+    addButton.addEventListener('click', async function (e) {
+      addButton.setAttribute('disabled', true);
+
+      const url = '/api/v1/blogs/create';
+      const method = 'POST';
+      const headers = new Headers();
+      headers.append('Content-Type', 'application/json');
+
+      const body = JSON.stringify({ title: 'Untitled', content: 'Your content here...' });
+
+      try {
+        const addBlogResponse = await fetch(url, { method, headers, body });
+
+        if (addBlogResponse.ok) {
+          const responseData = await addBlogResponse.json();
+          console.log(responseData);
+
+          const blogId = responseData?.blog?.id
+          window.location.href = `/admin/blogs/${blogId}`
+        } else {
+          console.error('Response not ok', addBlogResponse);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        addButton.removeAttribute('disabled')
+      }
+    });
+  </script>
+  {{/if}}
+
+</body>
+
+</html>
